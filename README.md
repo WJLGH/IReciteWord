@@ -2,8 +2,8 @@
 # IReciteWord
 
 - author :
-    - 王京龙  [email](1179315470@qq.com)
-    - 邢鹏飞 [email](1246389103@qq.com)
+    - WJLGH  [email](1179315470@qq.com)
+    - whywhathow [email](1246389103@qq.com)
 
 
 
