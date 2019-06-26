@@ -16,6 +16,8 @@
 #### UI:  	
 
 - 沉浸式布局（设置statusBar的color 属性以实现） 
+- 卡片布局（CardView）
+
 
   
 
