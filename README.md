@@ -4,8 +4,8 @@
 - author :
     - WJLGH  [email](1179315470@qq.com)
     - whywhathow [email](1246389103@qq.com)
-
-
+- reference：
+  [传送门](https://github.com/isuperqiang/Android-Word)
 
 ---
 
