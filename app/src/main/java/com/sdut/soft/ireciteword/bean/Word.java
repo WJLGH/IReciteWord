@@ -29,6 +29,13 @@ public class Word  implements Parcelable {
         mUnit = unit;
     }
 
+    public Word(String key, String phono, String trans, String example) {
+        mKey = key;
+        mPhono = phono;
+        mTrans = trans;
+        mExample = example;
+    }
+
     public int getId() {
         return mId;
     }

@@ -2,6 +2,9 @@ package com.sdut.soft.ireciteword.bean;
 
 import com.sdut.soft.ireciteword.utils.Const;
 
+/**
+ * 用户
+ */
 public class User {
     Integer id;
     String name;

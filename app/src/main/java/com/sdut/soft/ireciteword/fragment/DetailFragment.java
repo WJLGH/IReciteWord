@@ -11,8 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sackcentury.shinebuttonlib.ShineButton;
 import com.sdut.soft.ireciteword.R;
+import com.sdut.soft.ireciteword.bean.Unit;
 import com.sdut.soft.ireciteword.bean.Word;
+import com.sdut.soft.ireciteword.dao.UnitDao;
+import com.sdut.soft.ireciteword.dao.WordDao;
 import com.sdut.soft.ireciteword.utils.Const;
 
 
@@ -20,7 +24,9 @@ import com.sdut.soft.ireciteword.utils.Const;
 public class DetailFragment extends Fragment {
     private onSpeechListener mOnSpeechListener;
     private ImageView mImageView;
-
+    WordDao wordDao;
+    UnitDao unitDao;
+    ShineButton btnStar;
     public static DetailFragment newInstance(Word word) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(Const.WORD_KEY, word);
@@ -44,6 +50,8 @@ public class DetailFragment extends Fragment {
         TextView tvKey = (TextView) view.findViewById(R.id.tv_key);
         TextView tvPhono = (TextView) view.findViewById(R.id.tv_phono);
         TextView tvTrans = (TextView) view.findViewById(R.id.tv_trans);
+        unitDao = new UnitDao(getContext());
+        wordDao = new WordDao(getContext());
         final Word word = getArguments().getParcelable(Const.WORD_KEY);
         mImageView = (ImageView) view.findViewById(R.id.icon_speech);
         mImageView.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +68,23 @@ public class DetailFragment extends Fragment {
             tvPhono.setText("[" + word.getPhono() + "]");
             tvTrans.setText(word.getTrans());
         }
+
+        btnStar = (ShineButton)view.findViewById(R.id.btn_star);
+        btnStar.init(getActivity());
+        final Unit unit = unitDao.getUnitByName("生词表");
+        final Word schWord = wordDao.getWordInUnit(word, unit);
+        btnStar.setChecked(schWord != null);
+
+        btnStar.setOnCheckStateChangeListener(new ShineButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(View view, boolean checked) {
+                if(checked) {
+                     wordDao.insertWordToUnit(word,unit);
+                } else {
+                    wordDao.deleteWordFromUnit(schWord,unit);
+                }
+            }
+        });
         return view;
     }
 

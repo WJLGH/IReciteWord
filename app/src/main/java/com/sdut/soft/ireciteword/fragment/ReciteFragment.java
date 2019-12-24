@@ -3,16 +3,18 @@ package com.sdut.soft.ireciteword.fragment;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -23,13 +25,12 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.sdut.soft.ireciteword.DetailActivity;
-import com.sdut.soft.ireciteword.MainActivity;
 import com.sdut.soft.ireciteword.R;
-import com.sdut.soft.ireciteword.ReviewActivity;
+import com.sdut.soft.ireciteword.WordAddActivity;
+import com.sdut.soft.ireciteword.bean.Unit;
 import com.sdut.soft.ireciteword.bean.User;
+import com.sdut.soft.ireciteword.dao.UnitDao;
 import com.sdut.soft.ireciteword.dao.WordDao;
-import com.sdut.soft.ireciteword.user.UserService;
-import com.sdut.soft.ireciteword.utils.Const;
 import com.sdut.soft.ireciteword.utils.SettingsUtils;
 
 import java.util.ArrayList;
@@ -39,13 +40,25 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.content.Context.NOTIFICATION_SERVICE;
-
 public class ReciteFragment extends android.support.v4.app.Fragment {
     private static final String TAG = "ReciteFragment";
-    UserService userService;
+
+    UnitDao unitDao;
+
     @BindView(R.id.pie_chart)
     PieChart pieChart;
+    @BindView(R.id.period_spinner)
+    Spinner periodSpinner;
+    @BindView(R.id.unit_spinner)
+    Spinner unitSpinner;
+    @BindView(R.id.btn_word_add)
+    FloatingActionButton wordAddBtn;
+    List<Unit> units;
+    //选择的速度
+    int speedIndex = 2;
+    //选择的词典
+    int unitIndex = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,26 +68,24 @@ public class ReciteFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recite, container, false);
-        ButterKnife.bind(this,view);
-        userService = new UserService(getContext());
+        ButterKnife.bind(this, view);
+        unitDao = new UnitDao(getContext());
         initView();
         return view;
     }
 
 
-    @OnClick({R.id.btn_start,R.id.btn_review})
-    public void start(View v){
+    @OnClick({R.id.btn_start})
+    public void start(View v) {
         Intent intent = null;
-        switch (v.getId()) {
-            case R.id.btn_review:
-                intent = new Intent(getActivity(), ReviewActivity.class);
-                break;
-            case R.id.btn_start:
-                intent = new Intent(getActivity(), DetailActivity.class);
-                break;
-        }
-        startActivityForResult(intent,1);
+        intent = new Intent(getActivity(), DetailActivity.class);
+        String[] speeds = getResources().getStringArray(R.array.speed);
+
+        intent.putExtra("period", Integer.parseInt(speeds[speedIndex]) * 1000L);
+        intent.putExtra("unitName",units.get(unitIndex).getName());
+        startActivityForResult(intent, 1);
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -82,19 +93,48 @@ public class ReciteFragment extends android.support.v4.app.Fragment {
     }
 
     private void initView() {
-        showPieChart(pieChart);
+        periodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                speedIndex = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        units  = unitDao.getUnits();
+        List<String> uNameList = new ArrayList<>(units.size());
+        for (Unit unit : units) {
+            uNameList.add(unit.getName());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),R.layout.support_simple_spinner_dropdown_item,uNameList);
+        unitSpinner.setAdapter(adapter);
+        unitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Unit unit = units.get(position);
+                unitIndex = position;
+                showPieChart(unit);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        showPieChart(units.get(0));
+        wordAddBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(),WordAddActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Const.RECITE_FLAG || resultCode == Const.REVIEW_FLAG) {
-            User user = userService.currentUser();
-            notifyUnReviewWord(String.format("还剩%s个单词没有复习！！！"
-                    ,String.valueOf(user.getRcindex()-user.getRvindex())));
-            initView();
-        }
-    }
+
 
     private void notifyUnReviewWord(String showStr) {
         NotificationManager notificationManager = (NotificationManager) getContext().getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -117,31 +157,27 @@ public class ReciteFragment extends android.support.v4.app.Fragment {
                     .setAutoCancel(true)
                     .build();
         }
-        notificationManager.notify(111,notification);
+        notificationManager.notify(111, notification);
 
     }
 
-    private void showPieChart(PieChart pieChart) {
+    private void showPieChart(Unit unit) {
         WordDao wordDao = new WordDao(getContext());
-        int total = wordDao.getTotalCnt(SettingsUtils.getMeta(getContext()));
+        int total = unit.getCnt();
+        int progress = unit.getProgress();
         List<PieEntry> pieList = new ArrayList<>();
-        User user = userService.currentUser();
-        long rvCnt = user.getRvindex();
-        long rcCnt = user.getRcindex();
-        float review =   100.0f* rvCnt / total;
-        float unReview = 100.0f* (rcCnt - rvCnt) / total;
-        float newWord =  100.0f* (total - rcCnt) / total;
+        float review = 100.0f * progress / total;
+        float newWord = 100.0f * (total - progress) / total;
 
-        Log.i(TAG, "getPieChartData: "+review+":u"+unReview+":n"+newWord);
-        pieList.add(new PieEntry(review,"已复习"));
-        pieList.add(new PieEntry(unReview,"未复习"));
-        pieList.add(new PieEntry(newWord,"未学习"));
+        Log.i(TAG, "getPieChartData: " + review +":n" + newWord);
+        pieList.add(new PieEntry(review, "已学习"));
+        pieList.add(new PieEntry(newWord, "未学习"));
 
 
-        PieDataSet dataSet = new PieDataSet(pieList,"Label");
+        PieDataSet dataSet = new PieDataSet(pieList, "Label");
 
         // 设置颜色list，让不同的块显示不同颜色，下面是我觉得不错的颜色集合，比较亮
-        String []colorStr = {"#00FF00","#0000FF","#FFA500"};
+        String[] colorStr = {"#00FF00","#FFA500"};
         for (String s : colorStr) {
             dataSet.addColor(Color.parseColor(s));
         }
@@ -185,7 +221,7 @@ public class ReciteFragment extends android.support.v4.app.Fragment {
         pieChart.setDrawEntryLabels(true);
         //是否绘制PieChart内部中心文本
         pieChart.setDrawCenterText(true);
-        pieChart.setCenterText("已经背过了"+rcCnt+"个单词");
+        pieChart.setCenterText("已经背过了" + progress + "个单词");
         // 绘制内容value，设置字体颜色大小
         pieData.setDrawValues(true);
         pieData.setValueFormatter(new PercentFormatter());

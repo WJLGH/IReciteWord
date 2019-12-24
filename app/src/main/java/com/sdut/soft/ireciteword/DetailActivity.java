@@ -1,6 +1,7 @@
 package com.sdut.soft.ireciteword;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -13,12 +14,15 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sdut.soft.ireciteword.adapter.WordPagerAdapter;
+import com.sdut.soft.ireciteword.bean.Unit;
 import com.sdut.soft.ireciteword.bean.User;
 import com.sdut.soft.ireciteword.bean.Word;
+import com.sdut.soft.ireciteword.dao.UnitDao;
 import com.sdut.soft.ireciteword.dao.WordDao;
 import com.sdut.soft.ireciteword.fragment.DetailFragment;
 import com.sdut.soft.ireciteword.user.UserService;
@@ -33,10 +37,16 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener,
         ViewPager.OnPageChangeListener, DetailFragment.onSpeechListener {
     private static final int MSG_REFRESH = 0x1;
+
+    UnitDao unitDao;
+    long period = 2500L;
     private int mLevel = 0;// 2, 1, 0, -1, -2分别代表极慢、稍慢、普通、稍快、极快。
     private List<Word> mWordList;
     private int mWordKey;
@@ -51,33 +61,58 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     SharedPreferences mSharedPreferences;
     private boolean mIsAutoSpeak;
     private UserService userService;
+    Unit unit;
+    @BindView(R.id.btn_rm)
+    Button btnRm ;
+
+    int reciteCnt = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        ButterKnife.bind(this);
         initData();
         if(mWordList == null) {
             return;
         }
         initViews();
         initPlayer();
-        setTitle((mWordKey + 1) + "/" + mWordList.size());
+        showProgress();
         if (mIsAutoSpeak) {
             speech(mWordList.get(mWordKey));
         }
+
+    }
+
+    private void showProgress() {
+        setTitle((mWordKey + 1) + "/" + mWordList.size());
     }
 
     private void initData() {
+        Intent intent = getIntent();
+
+
+
         //获得要背诵的单词
         WordDao wordDao = new WordDao(this);
-        userService = new UserService(this);
-        mMetaKey = SettingsUtils.getMeta(this);
-        mWordList = wordDao.getNewWords(mMetaKey, userService.currentUser());
+        unitDao = new UnitDao(this);
+        String unitName = intent.getStringExtra("unitName");
+        unit = unitDao.getUnitByName(unitName);
+        mWordList = wordDao.getNewWordsFromUnit(unit,Const.PER_DAY);
+
         if (mWordList == null || mWordList.size() == 0) {
             finish();
             return;
         }
+        reciteCnt = mWordList.size();
+
+
+        //设置时间间隔
+
+        period = intent.getLongExtra("period",2500L);
+
         //设置定时回调函数
         mPlayHandler = new PlayHandler(this);
         mSharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -122,9 +157,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void saveReciteWord() {
-        User user = userService.currentUser();
-        user.setRcindex(user.getRcindex() + user.getPerday());
-        userService.commitProgress(user);
+        unit.setProgress(unit.getProgress()+ reciteCnt);
+        unitDao.saveUnit(unit);
         if (mIsPlaying) {
             mTimer.cancel();
         }
@@ -140,13 +174,14 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         tvPlay.setOnClickListener(this);
         findViewById(R.id.btn_prev).setOnClickListener(this);
         findViewById(R.id.btn_next).setOnClickListener(this);
-
+        btnRm.setOnClickListener(this);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mWordPagerAdapter = new WordPagerAdapter(getSupportFragmentManager(), mWordList);
         mViewPager.setAdapter(mWordPagerAdapter);
         mViewPager.setCurrentItem(mWordKey);
         mViewPager.addOnPageChangeListener(this);
     }
+
 
     @Override
     public void onClick(View v) {
@@ -156,8 +191,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                     pause();
                 }
                 if (mWordKey - 1 < 0) {
-                    Toast.makeText(this, R.string.first_page, Toast.LENGTH_SHORT).show();
-                    break;
+//                    Toast.makeText(this, R.string.first_page, Toast.LENGTH_SHORT).show();
+//                    break;
+                    mWordKey = mWordList.size()- 1;
                 } else {
                     mWordKey--;
                 }
@@ -175,12 +211,22 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                     pause();
                 }
                 if (mWordKey + 1 >= mWordList.size()) {
-                    Toast.makeText(this, R.string.last_page, Toast.LENGTH_SHORT).show();
-                    break;
+//                    Toast.makeText(this, R.string.last_page, Toast.LENGTH_SHORT).show();
+//                    break;
+                    mWordKey = 0;
                 } else {
                     mWordKey++;
                 }
                 mViewPager.setCurrentItem(mWordKey);
+                break;
+            case R.id.btn_rm:
+                if(mWordList.size() -1 == 0) {
+                    saveReciteWord();
+                    finish();
+                } else {
+                    mWordPagerAdapter.removeItem(mWordKey);
+                    showProgress();
+                }
                 break;
         }
     }
@@ -238,8 +284,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             if (detailActivity != null) {
                 if (msg.what == MSG_REFRESH) {
                     if (detailActivity.mWordKey + 1 > detailActivity.mWordList.size()) {
-                        detailActivity.pause();
-                        Toast.makeText(detailActivity, R.string.last_page, Toast.LENGTH_SHORT).show();
+                     //   detailActivity.pause();
+                      //  Toast.makeText(detailActivity, R.string.last_page, Toast.LENGTH_SHORT).show();
+                        //页面归零
+                        detailActivity.mWordKey = 0;
+                        detailActivity.mViewPager.setCurrentItem(detailActivity.mWordKey);
                     } else {
                         detailActivity.mViewPager.setCurrentItem(detailActivity.mWordKey);
                     }
@@ -276,10 +325,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void run() {
                 mWordKey++;
+                //定时任务
                 mPlayHandler.sendEmptyMessage(MSG_REFRESH);
             }
         };
-        long period = 2500L;
+
         mTimer = new Timer();
         mTimer.schedule(timerTask, 0, period);
     }

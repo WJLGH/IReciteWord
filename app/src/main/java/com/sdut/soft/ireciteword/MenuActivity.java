@@ -38,6 +38,8 @@ public class MenuActivity extends AppCompatActivity {
         titles.add("学习");
         titles.add("翻译");
         titles.add("工具");
+
+
         List<Fragment> fragments = new ArrayList<>();
         for (String title : titles) {
             mTabLayout.addTab(mTabLayout.newTab().setText(title));

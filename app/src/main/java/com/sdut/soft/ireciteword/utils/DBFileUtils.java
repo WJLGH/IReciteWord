@@ -23,7 +23,7 @@ public class DBFileUtils {
         String dbPath = context.getDir(Const.DB_DIR, Context.MODE_PRIVATE) + File.separator + Const.DB_NAME;
         File dbFile = new File(dbPath);
         //如果存在数据库文件，则不拷贝
-        if (!dbFile.exists())
+        //if (!dbFile.exists())
         {
             Log.i(TAG, "initDB: 写入新的数据库");
             InputStream inputStream = context.getResources().openRawResource(R.raw.words);

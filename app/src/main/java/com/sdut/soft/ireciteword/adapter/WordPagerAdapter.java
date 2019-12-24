@@ -3,6 +3,7 @@ package com.sdut.soft.ireciteword.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
@@ -20,7 +21,7 @@ public class WordPagerAdapter extends FragmentStatePagerAdapter {
     public WordPagerAdapter(FragmentManager fm, List<Word> wordList) {
         super(fm);
         mWordList = wordList;
-        mFragments=new SparseArray<>(mWordList.size());
+        mFragments = new SparseArray<>(mWordList.size());
     }
 
     @Override
@@ -30,10 +31,11 @@ public class WordPagerAdapter extends FragmentStatePagerAdapter {
         return detailFgt;
     }
 
+
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        super.destroyItem(container, position, object);
-        mFragments.remove(position);
+    public int getItemPosition(Object object) {
+        // TODO Auto-generated method stub
+        return PagerAdapter.POSITION_NONE;
     }
 
     @Override
@@ -43,5 +45,13 @@ public class WordPagerAdapter extends FragmentStatePagerAdapter {
 
     public Fragment getFragment(int position) {
         return mFragments.get(position);
+    }
+
+    public void removeItem(int mWordKey) {
+        if (mWordList.size() > 0) {
+            mWordList.remove(mWordKey);
+            notifyDataSetChanged();
+        }
+
     }
 }

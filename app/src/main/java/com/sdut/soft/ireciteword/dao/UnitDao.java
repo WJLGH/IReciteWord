@@ -1,5 +1,6 @@
 package com.sdut.soft.ireciteword.dao;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,40 +18,115 @@ public class UnitDao {
         mDBOpenHelper = DBOpenHelper.getInstance(context);
     }
 
-    public List<Unit> getUnits(String metaKey) {
+    /**
+     * 添加新的词汇表
+     * 返回是否创建成功
+     * @param unitName
+     */
+    public boolean createUnit(String unitName) {
+        SQLiteDatabase database = mDBOpenHelper.getDatabase();
+        try {
+            database.execSQL("CREATE TABLE \""+unitName+"\" ( " +
+                    "  Word_Id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "  Word_Key  TEXT, " +
+                    "  Word_Phono TEXT, " +
+                    "  Word_Trans TEXT, " +
+                    "  Word_Example TEXT   "+
+                    " )");
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("Unit_name",unitName);
+            database.insert("TABLE_UNIT",null,contentValues);
+
+            database.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 查询所有词汇表
+     * 返回所有的词汇表
+     * @return
+     */
+    public List<Unit> getUnits() {
         List<Unit> units = null;
-        String sql = "select Unit_Key, Unit_Time from TABLE_UNIT where Cate_Key=?";
+        String sql = "select Unit_id, Unit_name ,Unit_Progress from TABLE_UNIT";
         SQLiteDatabase db = mDBOpenHelper.getDatabase();
-        Cursor cursor = db.rawQuery(sql, new String[]{metaKey});
+        Cursor cursor = db.rawQuery(sql,null);
         if (cursor.moveToFirst()) {
             Unit unit;
             units = new ArrayList<>(cursor.getCount());
             do {
-                int key = cursor.getInt(cursor.getColumnIndex("Unit_Key"));
-                long time = cursor.getLong(cursor.getColumnIndex("Unit_Time"));
-                unit = new Unit(key, time, metaKey);
+                int id = cursor.getInt(cursor.getColumnIndex("Unit_Id"));
+                String name = cursor.getString(cursor.getColumnIndex("Unit_Name"));
+                int progress = cursor.getInt(cursor.getColumnIndex("Unit_Progress"));
+                int cnt = getTotalCnt(name);
+                unit = new Unit(id, name,progress,cnt);
                 units.add(unit);
             } while (cursor.moveToNext());
         }
         cursor.close();
         return units;
     }
-
-    public void updateTime(String metaKey, int unitKey, long time) {
-        String sqlUpdate = "update TABLE_UNIT set Unit_Time=? where Unit_Key=? and Cate_Key=?;";
+    /**
+     * 获取词汇表中单词的数量
+     * @param tableName
+     * @return
+     */
+    public int getTotalCnt(String tableName) {
+        String sql = null;
         SQLiteDatabase db = mDBOpenHelper.getDatabase();
-        db.execSQL(sqlUpdate, new Object[]{time + getTime(metaKey, unitKey), unitKey, metaKey});
-    }
-
-    public long getTime(String metaKey, int unitKey) {
-        String sql = "select Unit_Time from TABLE_UNIT where Unit_Key=? and Cate_Key=?;";
-        SQLiteDatabase db = mDBOpenHelper.getDatabase();
-        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(unitKey), metaKey});
-        long existTime = 0;
-        if (cursor.moveToFirst()) {
-            existTime = cursor.getLong(cursor.getColumnIndex("Unit_Time"));
+        sql = " select count(*) from " + tableName;
+        Cursor cursor = db.rawQuery(sql, null);
+        int count = 0;
+        if (cursor.moveToNext()) {
+            count = cursor.getInt(0);
         }
         cursor.close();
-        return existTime;
+        return count;
+    }
+
+    /**
+     * 删除词汇表
+     */
+    public boolean deleteUnit(Unit unit) {
+        SQLiteDatabase database = mDBOpenHelper.getDatabase();
+        try{
+            database.delete("TABLE_UNIT","Unit_Id = ?",new String[]{""+unit.getId()});
+            database.execSQL("drop table "+unit.getName());
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            return  false;
+        }
+        return true;
+    }
+
+    public Unit getUnitByName(String tableName) {
+        Unit unit= null;
+        SQLiteDatabase db = mDBOpenHelper.getDatabase();
+        Cursor cursor = db.query("TABLE_UNIT", null, "Unit_Name = ? ", new String[]{tableName}, null, null, null);
+        int count = 0;
+        if (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("Unit_Id"));
+            String name = cursor.getString(cursor.getColumnIndex("Unit_Name"));
+            int progress = cursor.getInt(cursor.getColumnIndex("Unit_Progress"));
+            int cnt = getTotalCnt(name);
+            unit = new Unit(id, name,progress,cnt);
+        }
+        cursor.close();
+       return unit;
+    }
+
+    public boolean saveUnit(Unit unit) {
+        //update
+        SQLiteDatabase database = mDBOpenHelper.getDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("Unit_Progress",unit.getProgress());
+        int update = database.update("TABLE_UNIT", contentValues, "Unit_Id = ?", new String[]{"" + unit.getId()});
+        return update > 0 ;
     }
 }

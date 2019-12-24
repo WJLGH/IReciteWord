@@ -1,45 +1,61 @@
 package com.sdut.soft.ireciteword.bean;
 
 /**
- * 单词词汇大类：
+ * 词汇表
  */
 public class Unit {
 
-    private int mKey;
-    private long mTime;
-    private String mMetaKey;
+   private  int id;
+   private String name;
+   private Integer cnt;
+   private int progress;
 
-    public Unit() {
+    public Unit(int id, String name,int progress,int cnt) {
+        this.id = id;
+        this.name = name;
+        this.progress = progress;
+        this.cnt = cnt;
     }
 
-    public Unit(int key, long time, String metaKey) {
-        mKey = key;
-        mTime = time;
-        mMetaKey = metaKey;
+    public int getProgress() {
+        return progress;
     }
 
-    public int getKey() {
-        return mKey;
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 
-    public void setKey(int key) {
-        mKey = key;
+    public int getId() {
+        return id;
     }
 
-    public long getTime() {
-        return mTime;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setTime(long time) {
-        mTime = time;
+    public String getName() {
+        return name;
     }
 
-    public String getMetaKey() {
-        return mMetaKey;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setMetaKey(String metaKey) {
-        mMetaKey = metaKey;
+    public Integer getCnt() {
+        return cnt;
     }
 
+    public void setCnt(Integer cnt) {
+        this.cnt = cnt;
+    }
+
+    @Override
+    public String toString() {
+        return "Unit{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", cnt=" + cnt +
+                ", progress=" + progress +
+                '}';
+    }
 }

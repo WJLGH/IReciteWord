@@ -6,39 +6,89 @@
     android:layout_height="match_parent"
     android:padding="5dp">
 
+
+
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pie_chart"
         android:layout_width="400dp"
         android:layout_height="400dp"
-        android:layout_gravity="center" />
+        android:layout_gravity="center" >
 
-    <TextView
-        android:id="@+id/tv_last"
+    </com.github.mikephil.charting.charts.PieChart>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_word_add"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="18dp"
+        android:clickable="true"
+        app:fabSize="normal"
+        android:scaleType="center"
+        android:src="@drawable/add_float_btn"
+        app:backgroundTint="@color/color_f5f5f5" />
+    <LinearLayout
+        android:id="@+id/period_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/pie_chart"
-        android:layout_marginTop="5dp"
-        android:gravity="center_horizontal"
-        android:text="还剩个单词没有复习！！！"
-        android:textColor="@color/vob_green"
-        android:textSize="20sp" />
+        android:layout_below="@id/pie_chart"
+        android:orientation="horizontal">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pie_chart"
+
+
+            android:text="单词时间间隔："
+            android:textColor="@color/vob_green"
+            android:textSize="20sp" />
+
+        <Spinner
+            android:id="@+id/period_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:entries="@array/speed" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/unit_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/period_layout"
+        android:layout_marginTop="6dp"
+
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="627dp"
+            android:layout_height="wrap_content"
+
+
+            android:layout_weight="2"
+            android:text="词汇表："
+            android:textAlignment="center"
+            android:textColor="@color/vob_green"
+            android:textSize="20sp" />
+
+        <Spinner
+            android:id="@+id/unit_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:entries="@array/speed" />
+
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="45dp">
-
-        <Button
-
-            android:id="@+id/btn_review"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/shap_btn_normal"
-            android:text="开始复习"
-            android:textColor="#fff" />
+        android:layout_marginTop="6dp"
+        android:layout_below="@+id/unit_layout">
 
         <Button
             android:id="@+id/btn_start"
@@ -49,6 +99,7 @@
             android:background="@drawable/shap_btn_normal_green"
             android:text="开始背诵"
             android:textColor="#ffffff" />
+
     </LinearLayout>
 
 </RelativeLayout>
