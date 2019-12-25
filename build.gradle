@@ -7,6 +7,7 @@ buildscript {
         maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
         maven { url 'http://maven.aliyun.com/nexus/content/repositories/google' }
         maven { url 'http://maven.aliyun.com/nexus/content/repositories/gradle-plugin' }
+        mavenCentral()
         google()
         jcenter()
     }
@@ -28,6 +29,8 @@ allprojects {
         maven { url 'http://maven.aliyun.com/nexus/content/repositories/gradle-plugin' }
         //BaseRecyclerViewAdapterHelper
         maven { url "https://jitpack.io" }
+        //文件选择器
+        maven {url "https://dl.bintray.com/firzenyogesh/maven"}
         google()
         jcenter()
     }

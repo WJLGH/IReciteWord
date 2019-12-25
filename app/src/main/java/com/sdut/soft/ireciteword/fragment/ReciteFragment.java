@@ -31,7 +31,7 @@ import com.sdut.soft.ireciteword.bean.Unit;
 import com.sdut.soft.ireciteword.bean.User;
 import com.sdut.soft.ireciteword.dao.UnitDao;
 import com.sdut.soft.ireciteword.dao.WordDao;
-import com.sdut.soft.ireciteword.utils.SettingsUtils;
+
 
 import java.util.ArrayList;
 import java.util.List;

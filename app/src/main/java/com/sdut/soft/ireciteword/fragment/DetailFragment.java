@@ -14,9 +14,11 @@ import android.widget.TextView;
 import com.sackcentury.shinebuttonlib.ShineButton;
 import com.sdut.soft.ireciteword.R;
 import com.sdut.soft.ireciteword.bean.Unit;
+import com.sdut.soft.ireciteword.bean.User;
 import com.sdut.soft.ireciteword.bean.Word;
 import com.sdut.soft.ireciteword.dao.UnitDao;
 import com.sdut.soft.ireciteword.dao.WordDao;
+import com.sdut.soft.ireciteword.user.UserService;
 import com.sdut.soft.ireciteword.utils.Const;
 
 
@@ -25,6 +27,7 @@ public class DetailFragment extends Fragment {
     private onSpeechListener mOnSpeechListener;
     private ImageView mImageView;
     WordDao wordDao;
+    UserService userService;
     UnitDao unitDao;
     ShineButton btnStar;
     public static DetailFragment newInstance(Word word) {
@@ -52,6 +55,7 @@ public class DetailFragment extends Fragment {
         TextView tvTrans = (TextView) view.findViewById(R.id.tv_trans);
         unitDao = new UnitDao(getContext());
         wordDao = new WordDao(getContext());
+        userService = new UserService(getContext());
         final Word word = getArguments().getParcelable(Const.WORD_KEY);
         mImageView = (ImageView) view.findViewById(R.id.icon_speech);
         mImageView.setOnClickListener(new View.OnClickListener() {
@@ -71,7 +75,8 @@ public class DetailFragment extends Fragment {
 
         btnStar = (ShineButton)view.findViewById(R.id.btn_star);
         btnStar.init(getActivity());
-        final Unit unit = unitDao.getUnitByName("生词表");
+        User user = userService.currentUser();
+        final Unit unit = unitDao.getUnitByName(user.getName()+"的生词表");
         final Word schWord = wordDao.getWordInUnit(word, unit);
         btnStar.setChecked(schWord != null);
 

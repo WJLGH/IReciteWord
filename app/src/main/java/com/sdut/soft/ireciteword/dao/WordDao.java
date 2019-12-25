@@ -6,11 +6,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.iflytek.cloud.Setting;
 import com.sdut.soft.ireciteword.bean.Unit;
 import com.sdut.soft.ireciteword.bean.User;
 import com.sdut.soft.ireciteword.bean.Word;
 import com.sdut.soft.ireciteword.db.DBOpenHelper;
 import com.sdut.soft.ireciteword.utils.Const;
+import com.sdut.soft.ireciteword.utils.SettingUtils;
+import com.sdut.soft.ireciteword.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,9 +21,11 @@ import java.util.List;
 
 public class WordDao {
     private DBOpenHelper mDBOpenHelper;
+    private Context context;
 
     //Word_Id, Word_Key, Word_Phono, Word_Trans, Word_Example, Word_Unit;
     public WordDao(Context context) {
+        this.context = context;
         mDBOpenHelper = DBOpenHelper.getInstance(context);
     }
 
@@ -102,8 +107,16 @@ public class WordDao {
         Word nword = null;
         SQLiteDatabase database = mDBOpenHelper.getDatabase();
 
-        String sql = " select Word_Id, Word_Key, Word_Phono, Word_Trans, Word_Example from " + unit.getName() + " where Word_Key = ?";
-        Cursor cursor = database.rawQuery(sql, new String[]{word.getKey()});
+        String sql = null;
+        Cursor cursor = null;
+        if (word.getKey() != null) {
+            sql =  " select Word_Id, Word_Key, Word_Phono, Word_Trans, Word_Example from " + unit.getName() + " where Word_Key = ?";
+            cursor = database.rawQuery(sql, new String[]{word.getKey()});
+        } else {
+            sql =  " select Word_Id, Word_Key, Word_Phono, Word_Trans, Word_Example from " + unit.getName() + " where Word_Id = ?";
+            cursor = database.rawQuery(sql, new String[]{""+word.getId()});
+        }
+
         if (cursor.moveToFirst()) {
 
             int id = cursor.getInt(cursor.getColumnIndex("Word_Id"));
@@ -111,7 +124,7 @@ public class WordDao {
             String phono = cursor.getString(cursor.getColumnIndex("Word_Phono"));
             String trans = cursor.getString(cursor.getColumnIndex("Word_Trans"));
             String exam = cursor.getString(cursor.getColumnIndex("Word_Example"));
-            nword = new Word(id, key, phono, trans, exam, unit.getId());
+            nword = new Word(id, key, phono, trans, exam, unit);
         }
         cursor.close();
         return nword;
@@ -127,13 +140,14 @@ public class WordDao {
         List<Word> words = null;
         String sql = null;
         SQLiteDatabase db = mDBOpenHelper.getDatabase();
+        String unitName = SettingUtils.getDefaultSearchUnit(context);
         //是英文
         Cursor cursor = null;
         if (Character.isUpperCase(str.toUpperCase().charAt(0))) {
-            sql = " select Word_Id, Word_Key, Word_Phono, Word_Trans, Word_Example ,Word_Unit from " + Const.DEFAULT_UNIT + " where Word_Key like ? ";
+            sql = " select Word_Id, Word_Key, Word_Phono, Word_Trans, Word_Example  from " + unitName + " where Word_Key like ? ";
             cursor = db.rawQuery(sql, new String[]{String.valueOf(str + "%")});
         } else {
-            sql = " select Word_Id, Word_Key, Word_Phono, Word_Trans, Word_Example ,Word_Unit  from " + Const.DEFAULT_UNIT + " where Word_Trans like ? ";
+            sql = " select Word_Id, Word_Key, Word_Phono, Word_Trans, Word_Example   from " + unitName + " where Word_Trans like ? ";
             cursor = db.rawQuery(sql, new String[]{String.valueOf("%" + str + "%")});
         }
         if (cursor.moveToFirst()) {
@@ -145,8 +159,7 @@ public class WordDao {
                 String phono = cursor.getString(cursor.getColumnIndex("Word_Phono"));
                 String trans = cursor.getString(cursor.getColumnIndex("Word_Trans"));
                 String exam = cursor.getString(cursor.getColumnIndex("Word_Example"));
-                Integer unit = cursor.getInt(cursor.getColumnIndex("Word_Unit"));
-                word = new Word(id, key, phono, trans, exam, unit);
+                word = new Word(id, key, phono, trans, exam, null);
                 words.add(word);
             } while (cursor.moveToNext());
         }
@@ -200,7 +213,7 @@ public class WordDao {
                 String trans = cursor.getString(cursor.getColumnIndex("Word_Trans"));
                 String exam = cursor.getString(cursor.getColumnIndex("Word_Example"));
                 Integer unit = cursor.getInt(cursor.getColumnIndex("Word_Unit"));
-                word = new Word(id, key, phono, trans, exam, unit);
+                word = new Word(id, key, phono, trans, exam, null);
                 words.add(word);
             } while (cursor.moveToNext());
         }
@@ -221,7 +234,7 @@ public class WordDao {
         SQLiteDatabase db = mDBOpenHelper.getDatabase();
         Cursor cursor = db.rawQuery(sql, new String[]{
                 String.valueOf(main.getId()),
-                String.valueOf(main.getUnit())
+                String.valueOf(main.getmUnit().getId())
         });
         if (cursor.moveToFirst()) {
             words = new ArrayList<>(cursor.getCount());
@@ -233,7 +246,7 @@ public class WordDao {
                 String trans = cursor.getString(cursor.getColumnIndex("Word_Trans"));
                 String exam = cursor.getString(cursor.getColumnIndex("Word_Example"));
                 Integer unit = cursor.getInt(cursor.getColumnIndex("Word_Unit"));
-                word = new Word(id, key, phono, trans, exam, unit);
+                word = new Word(id, key, phono, trans, exam, null);
                 words.add(word);
             } while (cursor.moveToNext());
         }
@@ -268,7 +281,7 @@ public class WordDao {
                 String trans = cursor.getString(cursor.getColumnIndex("Word_Trans"));
                 String exam = cursor.getString(cursor.getColumnIndex("Word_Example"));
                 Integer unit = cursor.getInt(cursor.getColumnIndex("Word_Unit"));
-                word = new Word(id, key, phono, trans, exam, unit);
+                word = new Word(id, key, phono, trans, exam, null);
                 words.add(word);
             } while (cursor.moveToNext());
         }
@@ -295,7 +308,7 @@ public class WordDao {
                 String trans = cursor.getString(cursor.getColumnIndex("Word_Trans"));
                 String exam = cursor.getString(cursor.getColumnIndex("Word_Example"));
                 Integer unit = cursor.getInt(cursor.getColumnIndex("Word_Unit"));
-                word = new Word(id, key, phono, trans, exam, unit);
+                word = new Word(id, key, phono, trans, exam, null);
             } while (cursor.moveToNext());
         }
         return word;
@@ -317,7 +330,7 @@ public class WordDao {
                 String trans = cursor.getString(cursor.getColumnIndex("Word_Trans"));
                 String exam = cursor.getString(cursor.getColumnIndex("Word_Example"));
 //                Integer unit = cursor.getInt(cursor.getColumnIndex("Word_Unit"));
-                word = new Word(id, key, phono, trans, exam, unit.getId());
+                word = new Word(id, key, phono, trans, exam, unit);
                 words.add(word);
             } while (cursor.moveToNext());
         }
@@ -330,7 +343,7 @@ public class WordDao {
         String sql = "select Word_Key, Word_Phono, Word_Trans, Word_Example  from " + unitName;
         SQLiteDatabase db = mDBOpenHelper.getDatabase();
 
-        Cursor cursor = db.rawQuery(sql ,null);
+        Cursor cursor = db.rawQuery(sql, null);
         if (cursor.moveToFirst()) {
             words = new ArrayList<>(cursor.getCount());
             Word word;
@@ -340,7 +353,7 @@ public class WordDao {
                 String trans = cursor.getString(cursor.getColumnIndex("Word_Trans"));
                 String exam = cursor.getString(cursor.getColumnIndex("Word_Example"));
 //                Integer unit = cursor.getInt(cursor.getColumnIndex("Word_Unit"));
-                word = new Word( key, phono, trans, exam);
+                word = new Word(key, phono, trans, exam);
                 words.add(word);
             } while (cursor.moveToNext());
         }

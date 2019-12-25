@@ -21,8 +21,8 @@ public class UnitAdapter extends BaseQuickAdapter<Unit,BaseViewHolder> {
     @Override
     protected void convert(BaseViewHolder helper, Unit item) {
         helper.setText(R.id.unit_name, item.getName())
-                .setText(R.id.unit_cnt_txt, ""+item.getCnt());
-//                .setProgress(R.id.unit_progressbar,item.getProgress(),item.getCnt());
+                .setText(R.id.unit_cnt_txt, ""+item.getCnt())
+                .setProgress(R.id.unit_progressbar,item.getProgress(),item.getCnt());
 
     }
 }

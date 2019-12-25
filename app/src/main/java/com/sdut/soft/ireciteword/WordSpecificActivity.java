@@ -11,13 +11,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.sdut.soft.ireciteword.bean.Unit;
 import com.sdut.soft.ireciteword.bean.Word;
 import com.sdut.soft.ireciteword.dao.WordDao;
 import com.sdut.soft.ireciteword.fragment.DetailFragment;
 import com.sdut.soft.ireciteword.utils.Const;
+import com.sdut.soft.ireciteword.utils.SettingUtils;
 import com.sdut.soft.ireciteword.utils.YouDaoAudioUriUtils;
 
 import java.io.IOException;
+import java.util.Set;
 
 import static android.R.color.white;
 
@@ -40,7 +43,10 @@ public class WordSpecificActivity extends AppCompatActivity implements DetailFra
     private void addDetailFgt() {
         Intent intent = getIntent();
         int id = intent.getIntExtra("id", 1);
-        Word w = wordDao.getWordById(Const.DEFAULT_META, id);
+        Word keyWord = new Word();
+        keyWord.setId(id);
+        Unit unit = new Unit(SettingUtils.getDefaultSearchUnit(WordSpecificActivity.this));
+        Word w = wordDao.getWordInUnit(keyWord,unit);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         detailFgt = DetailFragment.newInstance(w);

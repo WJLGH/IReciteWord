@@ -9,12 +9,25 @@ public class Unit {
    private String name;
    private Integer cnt;
    private int progress;
+   private  boolean isChecked;
 
     public Unit(int id, String name,int progress,int cnt) {
         this.id = id;
         this.name = name;
         this.progress = progress;
         this.cnt = cnt;
+    }
+
+    public Unit(String name) {
+        this.name = name;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
     public int getProgress() {

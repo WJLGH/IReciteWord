@@ -27,6 +27,7 @@ import com.sdut.soft.ireciteword.WordSpecificActivity;
 import com.sdut.soft.ireciteword.adapter.SearchWordAdapter;
 import com.sdut.soft.ireciteword.bean.Word;
 import com.sdut.soft.ireciteword.searchWord.SearchWordService;
+import com.sdut.soft.ireciteword.utils.StringUtils;
 
 import java.util.List;
 
@@ -78,7 +79,12 @@ public class SearchFragment extends Fragment {
 
     @OnClick(R.id.btn_search)
     public void searchWord() {
-        final List<Word> words = service.findWords(etWord.getText().toString());
+        String key = etWord.getText().toString().trim();
+        if(StringUtils.isEmpty(key)) {
+            Toast.makeText(getContext(), "输入单词不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        final List<Word> words = service.findWords(key);
         Log.i(TAG, "searchWord: " + words);
         SearchWordAdapter adapter = new SearchWordAdapter(R.layout.search_word_item, words);
         // TODO add searchHistory

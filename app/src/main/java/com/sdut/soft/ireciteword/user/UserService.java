@@ -4,15 +4,18 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.sdut.soft.ireciteword.bean.User;
+import com.sdut.soft.ireciteword.dao.UnitDao;
 import com.sdut.soft.ireciteword.dao.UserDao;
 
 public class UserService {
     UserDao userDao;
     Context context;
+    UnitDao unitDao;
 
     public UserService(Context context) {
         this.userDao = new UserDao(context);
         this.context = context;
+        this.unitDao = new UnitDao(context);
     }
 
     // abc
@@ -21,6 +24,7 @@ public class UserService {
     }
 
     public boolean register(User user) {
+        unitDao.createUnit(user.getName()+"的生词表");
         return userDao.insert(user) > 0;
     }
 

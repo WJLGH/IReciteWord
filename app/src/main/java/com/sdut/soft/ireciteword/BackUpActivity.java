@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -24,12 +25,12 @@ import com.sdut.soft.ireciteword.utils.MyExcelUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class BackUpActivity extends AppCompatActivity {
-
     @BindView(R.id.unit_recycler)
     RecyclerView recyclerView;
     @Override

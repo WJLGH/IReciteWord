@@ -6,7 +6,7 @@ import com.sdut.soft.ireciteword.bean.User;
 import com.sdut.soft.ireciteword.bean.Word;
 import com.sdut.soft.ireciteword.dao.WordDao;
 import com.sdut.soft.ireciteword.user.UserService;
-import com.sdut.soft.ireciteword.utils.SettingsUtils;
+import com.sdut.soft.ireciteword.utils.SettingUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,7 +25,7 @@ public class WordReciteService {
 
     public WordReciteService(Context context) {
         this.context = context;
-        this.meta = SettingsUtils.getMeta(context);
+        this.meta = SettingUtils.getDefaultSearchUnit(context);
         eList = new ArrayList<>();
         User user = new UserService(context).currentUser();
         List<Word> words = new WordDao(context).getReviewWords(meta, user);

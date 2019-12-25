@@ -15,12 +15,12 @@ public class Word  implements Parcelable {
     private String mPhono;
     private String mTrans;
     private String mExample;
-    private int mUnit;
+    private Unit mUnit;
 
     public Word() {
     }
 
-    public Word(int id, String key, String phono, String trans, String example, int unit) {
+    public Word(int id, String key, String phono, String trans, String example, Unit unit) {
         mId = id;
         mKey = key;
         mPhono = phono;
@@ -76,12 +76,12 @@ public class Word  implements Parcelable {
         mExample = example;
     }
 
-    public int getUnit() {
+    public Unit getmUnit() {
         return mUnit;
     }
 
-    public void setUnit(int unit) {
-        mUnit = unit;
+    public void setmUnit(Unit mUnit) {
+        this.mUnit = mUnit;
     }
 
     @Override
@@ -107,7 +107,6 @@ public class Word  implements Parcelable {
         dest.writeString(this.mPhono);
         dest.writeString(this.mTrans);
         dest.writeString(this.mExample);
-        dest.writeInt(this.mUnit);
     }
 
     protected Word(Parcel in) {
@@ -116,7 +115,6 @@ public class Word  implements Parcelable {
         this.mPhono = in.readString();
         this.mTrans = in.readString();
         this.mExample = in.readString();
-        this.mUnit = in.readInt();
     }
 
     public static final Parcelable.Creator<Word> CREATOR = new Parcelable.Creator<Word>() {

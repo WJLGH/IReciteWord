@@ -11,17 +11,21 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.sdut.soft.ireciteword.adapter.DefaultUnitAdapter;
 import com.sdut.soft.ireciteword.adapter.MetaOptionAdapter;
 import com.sdut.soft.ireciteword.bean.MetaOption;
+import com.sdut.soft.ireciteword.bean.Unit;
 import com.sdut.soft.ireciteword.bean.User;
+import com.sdut.soft.ireciteword.dao.UnitDao;
 import com.sdut.soft.ireciteword.user.UserService;
 import com.sdut.soft.ireciteword.utils.Const;
-import com.sdut.soft.ireciteword.utils.SettingsUtils;
+import com.sdut.soft.ireciteword.utils.SettingUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,24 +39,13 @@ import static android.R.color.white;
 public class BaseSettingActivity extends AppCompatActivity {
     private static final String TAG = "BaseSettingActivity";
 
-    @BindView(R.id.rg_meta)
-    RadioGroup rgMeta;
-
-    @BindView(R.id.rb_CET4)
-    RadioButton rdCET4;
-
-    @BindView(R.id.rb_CET6)
-    RadioButton rbCET6;
-
-    @BindView(R.id.rb_GRE)
-    RadioButton rbGRE;
-
-    @BindView(R.id.rb_IETSL)
-    RadioButton rbIETSL;
+    @BindView(R.id.default_unit_recycler)
+   RecyclerView recyclerView;
+    DefaultUnitAdapter adapter;
     @BindView(R.id.et_perday)
     EditText etPerday;
-
-    String meta = Const.DEFAULT_META;
+    List<Unit> units;
+    int lastIndex = -1;
     Integer perDay = Const.PER_DAY;
 
     @Override
@@ -83,11 +76,8 @@ public class BaseSettingActivity extends AppCompatActivity {
                             finish();
                             return;
                         }
-                        SettingsUtils.setMeta(BaseSettingActivity.this, meta);
-                        UserService userService = new UserService(BaseSettingActivity.this);
-                        User user = userService.currentUser();
-                        user.setPerday(perDay);
-                        userService.commitProgress(user);
+                        SettingUtils.setDefaultSearchUnit(getApplicationContext(),units.get(lastIndex).getName());
+                        SettingUtils.setPerDay(getApplicationContext(),perDay);
                         finish();
                     }
                 })
@@ -110,25 +100,25 @@ public class BaseSettingActivity extends AppCompatActivity {
 
     private void initView() {
 
-        rgMeta.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        units  = new UnitDao(this).getUnits();
+        adapter = new DefaultUnitAdapter(R.layout.unit_check_item,units);
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.rb_CET4:
-                        meta = Const.CET4_META;
-                        break;
-                    case R.id.rb_CET6:
-                        meta = Const.CET6_META;
-                        break;
-                    case R.id.rb_GRE:
-                        meta = Const.GRE_META;
-                        break;
-                    case R.id.rb_IETSL:
-                        meta = Const.IETSL_META;
-                        break;
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                if(lastIndex == -1 ) {
+                    lastIndex = position;
+                    units.get(position).setChecked(true);
+                } else if(lastIndex != position) {
+                    units.get(position).setChecked(true);
+                    units.get(lastIndex).setChecked(false);
+                    lastIndex = position;
                 }
+                adapter.notifyDataSetChanged();
+
             }
         });
+        recyclerView.setLayoutManager(new LinearLayoutManager(BaseSettingActivity.this));
+        recyclerView.setAdapter(adapter);
     }
 
     private void setToolBar() {

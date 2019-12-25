@@ -12,51 +12,27 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
-        app:navigationIcon="?attr/homeAsUpIndicator"
         android:background="@color/color_main_blue"
-        android:theme="@style/Theme.ToolBar.ZhiHu"/>
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/Theme.ToolBar.ZhiHu"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="可选词汇表" />
 
-    <RadioGroup
-        android:id="@+id/rg_meta"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
 
-        <RadioButton
-            android:id="@+id/rb_CET4"
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/default_unit_recycler"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:text="CET4" />
+            android:layout_height="wrap_content">
 
-        <RadioButton
-            android:id="@+id/rb_CET6"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:text="CET6" />
+        </android.support.v7.widget.RecyclerView>
 
-        <RadioButton
-            android:id="@+id/rb_GRE"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:text="GRE" />
 
-        <RadioButton
-            android:id="@+id/rb_IETSL"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:text="IETSL" />
-
-    </RadioGroup>
 
     <TextView
         android:layout_width="match_parent"
@@ -69,12 +45,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="numberPassword" />
+        android:inputType="number" />
+
     <Button
         android:id="@+id/btn_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/shap_btn_normal"
-        android:textColor="#fff"
-        android:text="保存配置"/>
+        android:text="保存配置"
+        android:textColor="#fff" />
 </LinearLayout>

@@ -27,7 +27,7 @@ import com.sdut.soft.ireciteword.dao.WordDao;
 import com.sdut.soft.ireciteword.fragment.DetailFragment;
 import com.sdut.soft.ireciteword.user.UserService;
 import com.sdut.soft.ireciteword.utils.Const;
-import com.sdut.soft.ireciteword.utils.SettingsUtils;
+import com.sdut.soft.ireciteword.utils.SettingUtils;
 import com.sdut.soft.ireciteword.utils.YouDaoAudioUriUtils;
 
 
@@ -58,7 +58,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private ViewPager mViewPager;
     private MediaPlayer mMediaPlayer;
     private WordPagerAdapter mWordPagerAdapter;
-    SharedPreferences mSharedPreferences;
+
     private boolean mIsAutoSpeak;
     private UserService userService;
     Unit unit;
@@ -100,7 +100,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         unitDao = new UnitDao(this);
         String unitName = intent.getStringExtra("unitName");
         unit = unitDao.getUnitByName(unitName);
-        mWordList = wordDao.getNewWordsFromUnit(unit,Const.PER_DAY);
+        int perday = SettingUtils.getPerDay(this);
+        mWordList = wordDao.getNewWordsFromUnit(unit,perday);
 
         if (mWordList == null || mWordList.size() == 0) {
             finish();
@@ -115,7 +116,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         //设置定时回调函数
         mPlayHandler = new PlayHandler(this);
-        mSharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+
     }
 
     private void initPlayer() {
