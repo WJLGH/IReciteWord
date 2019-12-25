@@ -20,10 +20,12 @@ import com.sdut.soft.ireciteword.BaseSettingActivity;
 import com.sdut.soft.ireciteword.AboutActivity;
 import com.sdut.soft.ireciteword.PwdActivity;
 import com.sdut.soft.ireciteword.R;
+import com.sdut.soft.ireciteword.RecoveryActivity;
 import com.sdut.soft.ireciteword.activity.toolbar.ZhiHuActivity;
 import com.sdut.soft.ireciteword.adapter.SettingOptionAdapter;
 import com.sdut.soft.ireciteword.bean.SettingOption;
 import com.sdut.soft.ireciteword.bean.User;
+import com.sdut.soft.ireciteword.dao.UnitDao;
 import com.sdut.soft.ireciteword.user.UserService;
 
 import java.util.ArrayList;
@@ -41,9 +43,11 @@ import butterknife.ButterKnife;
  */
 public class SettingsFragment extends Fragment {
 
+    @BindView(R.id.tv_tb_title)
+    TextView tbTitle;
     @BindView(R.id.iv_exit)
     ImageView ivExit;
-       @BindView(R.id.tv_name)
+    @BindView(R.id.tv_name)
     TextView tvName;
     @BindView(R.id.tv_rcindex)
     TextView tvRcindex;
@@ -51,29 +55,35 @@ public class SettingsFragment extends Fragment {
     RecyclerView recyclerView;
     SettingOptionAdapter adapter;
     UserService userService;
-    List<String > options = Arrays.asList("基本设置","修改密码","软件信息","Zhihu","数据备份");
+    List<String> options = Arrays.asList("基本设置", "修改密码", "数据备份","数据还原", "软件信息");
     // todo change aboutActivity -> zhihuActivity (project Problem)
     // TODO use for add some settings here .
-    List<Class<? extends AppCompatActivity>> tgtClz = Arrays.asList(BaseSettingActivity.class,PwdActivity.class, AboutActivity.class,ZhiHuActivity.class,BackUpActivity.class);
+    List<Class<? extends AppCompatActivity>> tgtClz = Arrays.asList(BaseSettingActivity.class,
+            PwdActivity.class,  BackUpActivity.class, RecoveryActivity.class, AboutActivity.class);
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-//
+
+    //
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
         initView();
         return view;
     }
 
     private void initView() {
+        tbTitle.setText("Settings");
         userService = new UserService(getContext());
         User user = userService.currentUser();
         tvName.setText(user.getName());
-        tvRcindex.setText(String.format("您的词汇量为%d个", user.getRcindex()));
+        String unitName = userService.getUserScb();
+        UnitDao unitDao = new UnitDao(getContext());
+        tvRcindex.setText(String.format("您的词汇量为%d个",unitDao.getTotalCnt(unitName)));
         ivExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +124,6 @@ public class SettingsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
     }
-
 
 
 }

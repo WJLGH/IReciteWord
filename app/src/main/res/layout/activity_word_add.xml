@@ -21,7 +21,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="词汇表："
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <AutoCompleteTextView
             android:id="@+id/unit_name_at"
@@ -43,7 +44,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="单词："
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/key_et"
@@ -69,7 +71,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="音标："
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/phono_et"
@@ -94,7 +97,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="词性释义："
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/trans_et"
@@ -123,7 +127,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="例句："
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
 
         <EditText
@@ -144,7 +149,7 @@
         android:id="@+id/word_add_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:background="@color/color_main_blue"
         android:layout_weight="0.5"
         android:text="添加" />
 </LinearLayout>

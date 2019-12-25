@@ -17,8 +17,7 @@
         android:roundIcon="@drawable/dictlogo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
-        android:usesCleartextTraffic="true"
-        >
+        android:usesCleartextTraffic="true">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,7 +46,8 @@
             android:name=".AboutActivity"
             android:theme="@style/Theme.Other" />
         <activity android:name=".WordAddActivity" />
-        <activity android:name=".BackUpActivity"></activity>
+        <activity android:name=".BackUpActivity" />
+        <activity android:name=".RecoveryActivity"></activity>
     </application>
 
 </manifest>

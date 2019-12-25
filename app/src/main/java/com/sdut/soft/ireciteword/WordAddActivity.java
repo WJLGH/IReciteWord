@@ -7,11 +7,13 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.sdut.soft.ireciteword.bean.Unit;
 import com.sdut.soft.ireciteword.bean.Word;
 import com.sdut.soft.ireciteword.dao.UnitDao;
 import com.sdut.soft.ireciteword.dao.WordDao;
+import com.sdut.soft.ireciteword.user.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,7 @@ public class WordAddActivity extends AppCompatActivity {
     Button wordAddBtn;
 
     WordDao wordDao;
-
+    UserService userService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,8 +51,10 @@ public class WordAddActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        userService = new UserService(this);
         unitDao = new UnitDao(this);
         wordDao = new WordDao(this);
+        unitAuto.setText(userService.getUserScb());
         List<Unit> units = unitDao.getUnits();
         List<String> uNameList = new ArrayList<>(units.size());
         for (Unit unit : units) {
@@ -72,8 +76,17 @@ public class WordAddActivity extends AppCompatActivity {
                     unit = unitDao.getUnitByName(unitName);
                 }
                 Word word = new Word(key, phono, trans, example);
-                wordDao.insertWordToUnit(word,unit);
+                boolean b = wordDao.insertWordToUnit(word, unit);
+                Toast.makeText(WordAddActivity.this, b?"添加成功":"添加失败", Toast.LENGTH_SHORT).show();
+                clearInput();
             }
         });
+    }
+
+    private void clearInput() {
+        keyEt.setText("");
+        phonoEt.setText("");
+        transEt.setText("");
+        exampleEt.setText("");
     }
 }

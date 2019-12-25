@@ -12,6 +12,9 @@ public class UserService {
     Context context;
     UnitDao unitDao;
 
+    public String getUserScb(){
+        return currentUser().getName()+"的生词表";
+    }
     public UserService(Context context) {
         this.userDao = new UserDao(context);
         this.context = context;

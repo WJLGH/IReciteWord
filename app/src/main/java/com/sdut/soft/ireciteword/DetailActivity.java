@@ -338,8 +338,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mPlayHandler.removeCallbacksAndMessages(null);
+
         if (mMediaPlayer != null) {
+            mPlayHandler.removeCallbacksAndMessages(null);
             if (mMediaPlayer.isPlaying()) {
                 mMediaPlayer.stop();
             }

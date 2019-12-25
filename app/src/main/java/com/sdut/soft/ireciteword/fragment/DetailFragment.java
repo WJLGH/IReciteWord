@@ -76,7 +76,7 @@ public class DetailFragment extends Fragment {
         btnStar = (ShineButton)view.findViewById(R.id.btn_star);
         btnStar.init(getActivity());
         User user = userService.currentUser();
-        final Unit unit = unitDao.getUnitByName(user.getName()+"的生词表");
+        final Unit unit = unitDao.getUnitByName(userService.getUserScb());
         final Word schWord = wordDao.getWordInUnit(word, unit);
         btnStar.setChecked(schWord != null);
 

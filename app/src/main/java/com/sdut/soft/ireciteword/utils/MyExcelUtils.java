@@ -1,8 +1,11 @@
 package com.sdut.soft.ireciteword.utils;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.Toast;
 
+import com.sdut.soft.ireciteword.BackUpActivity;
 import com.sdut.soft.ireciteword.bean.Word;
 
 import java.io.File;
@@ -66,8 +69,7 @@ public class MyExcelUtils {
 
     /**
      * 初始化Excel
-     *
-     * @param fileName 导出excel存放的地址（目录）
+     *  @param fileName 导出excel存放的地址（目录）
      * @param colName  excel中包含的列名（可以有多个）
      */
     public static void initExcel(String fileName, String sheetName, String[] colName) {
@@ -84,11 +86,13 @@ public class MyExcelUtils {
             //创建标题栏
             sheet.addCell((WritableCell) new Label(0, 0, fileName, arial14format));
             for (int col = 0; col < colName.length; col++) {
+
                 sheet.addCell(new Label(col, 0, colName[col], arial10format));
             }
             //设置行高
             sheet.setRowView(0, 340);
             workbook.write();
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -132,7 +136,7 @@ public class MyExcelUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> void writeObjListToExcel(List<T> objList, String fileName, Context c) {
+    public static <T> void writeObjListToExcel(List<T> objList, String fileName, Context c, Handler dataExportProgressHandler) {
         if (objList != null && objList.size() > 0) {
             WritableWorkbook writebook = null;
             InputStream in = null;
@@ -167,9 +171,15 @@ public class MyExcelUtils {
                 }
 
                 writebook.write();
-                Toast.makeText(c, "导出Excel成功", Toast.LENGTH_SHORT).show();
+                Message message = new Message();
+                message.what = Const.FINISH;
+                message.obj = fileName;
+                dataExportProgressHandler.sendMessage(message);
             } catch (Exception e) {
                 e.printStackTrace();
+                Message message = new Message();
+                message.what = Const.FAILURE;
+                dataExportProgressHandler.sendMessage(message);
             } finally {
                 if (writebook != null) {
                     try {

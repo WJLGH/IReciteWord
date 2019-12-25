@@ -50,7 +50,7 @@ public class TranslateFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_translate, container, false);
         ButterKnife.bind(this, view);
-        setToolBar();
+       // setToolBar();
         initView();
         return view;
     }

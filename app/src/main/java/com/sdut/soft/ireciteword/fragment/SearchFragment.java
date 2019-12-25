@@ -67,7 +67,7 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         ButterKnife.bind(this, view);
-        setToolBar();
+      //  setToolBar();
         tvTitle.setText("Search");
         initView();
         return view;

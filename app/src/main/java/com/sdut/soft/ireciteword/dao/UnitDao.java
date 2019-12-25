@@ -73,13 +73,13 @@ public class UnitDao {
     }
     /**
      * 获取词汇表中单词的数量
-     * @param tableName
+     * @param unitName
      * @return
      */
-    public int getTotalCnt(String tableName) {
+    public int getTotalCnt(String unitName) {
         String sql = null;
         SQLiteDatabase db = mDBOpenHelper.getDatabase();
-        sql = " select count(*) from " + tableName;
+        sql = " select count(*) from " + unitName;
         Cursor cursor = db.rawQuery(sql, null);
         int count = 0;
         if (cursor.moveToNext()) {

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -45,6 +46,8 @@ public class ReciteFragment extends android.support.v4.app.Fragment {
 
     UnitDao unitDao;
 
+    @BindView(R.id.tv_tb_title)
+    TextView tbTitle;
     @BindView(R.id.pie_chart)
     PieChart pieChart;
     @BindView(R.id.period_spinner)
@@ -93,6 +96,7 @@ public class ReciteFragment extends android.support.v4.app.Fragment {
     }
 
     private void initView() {
+        tbTitle.setText("Learning");
         periodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -177,7 +181,7 @@ public class ReciteFragment extends android.support.v4.app.Fragment {
         PieDataSet dataSet = new PieDataSet(pieList, "Label");
 
         // 设置颜色list，让不同的块显示不同颜色，下面是我觉得不错的颜色集合，比较亮
-        String[] colorStr = {"#00FF00","#FFA500"};
+        String[] colorStr = {"#0176da","#00FF00"};
         for (String s : colorStr) {
             dataSet.addColor(Color.parseColor(s));
         }

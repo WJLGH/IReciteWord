@@ -52,7 +52,10 @@ public class WordDao {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        } finally {
+            database.close();
         }
+
         return ret;
     }
 
@@ -73,7 +76,10 @@ public class WordDao {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        } finally {
+            database.close();
         }
+
         return ret;
     }
 
@@ -93,6 +99,7 @@ public class WordDao {
             count = cursor.getInt(0);
         }
         cursor.close();
+        db.close();
         return count;
     }
 
@@ -127,6 +134,7 @@ public class WordDao {
             nword = new Word(id, key, phono, trans, exam, unit);
         }
         cursor.close();
+        database.close();
         return nword;
     }
 
@@ -164,6 +172,7 @@ public class WordDao {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        db.close();
         return words;
     }
 
@@ -184,6 +193,7 @@ public class WordDao {
             count = cursor.getInt(0);
         }
         cursor.close();
+        db.close();
         return count;
     }
 
@@ -218,6 +228,7 @@ public class WordDao {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        db.close();
         return words;
     }
 
@@ -251,6 +262,7 @@ public class WordDao {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        db.close();
         return words;
     }
 
@@ -286,6 +298,7 @@ public class WordDao {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        db.close();
         return words;
     }
 
@@ -311,6 +324,8 @@ public class WordDao {
                 word = new Word(id, key, phono, trans, exam, null);
             } while (cursor.moveToNext());
         }
+        cursor.close();
+        db.close();
         return word;
     }
 
@@ -335,6 +350,7 @@ public class WordDao {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        db.close();
         return words;
     }
 
@@ -358,6 +374,19 @@ public class WordDao {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        db.close();
         return words;
+    }
+
+    public void insertWordListToUnit(List<Word> words, String unitName) {
+        UnitDao unitDao = new UnitDao(context);
+        Unit unit = unitDao.getUnitByName(unitName);
+        if(unit == null) {
+            unitDao.createUnit(unitName);
+            unit = unitDao.getUnitByName(unitName);
+        }
+        for (Word word : words) {
+            insertWordToUnit(word,unit);
+        }
     }
 }

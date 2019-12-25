@@ -58,17 +58,18 @@
 
     <ImageView
         android:id="@+id/iv_trans"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+
         android:layout_below="@id/tv_phono"
         android:layout_alignStart="@+id/iv_exam"
         android:layout_marginTop="31dp"
-        android:scaleType="fitCenter"
+        android:scaleType="fitXY"
         android:src="@mipmap/word_trans" />
 
     <TextView
         android:id="@+id/tv_trans"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/iv_trans"
         android:layout_alignStart="@id/iv_trans"
@@ -82,17 +83,17 @@
 
     <ImageView
         android:id="@+id/iv_exam"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_trans"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:scaleType="fitCenter"
+        android:scaleType="fitXY"
         android:src="@mipmap/word_example" />
 
     <TextView
         android:id="@+id/tv_exam"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/iv_exam"
         android:layout_alignStart="@id/iv_exam"
