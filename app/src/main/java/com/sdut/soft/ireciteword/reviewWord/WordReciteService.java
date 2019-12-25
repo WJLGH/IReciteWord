@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+
 /**
  * 背诵单词序列类
  */
@@ -60,10 +61,12 @@ public class WordReciteService {
         currentE = itr.next();
         return currentE ;
     }
-    public void choose(int index) {
+    public int choose(int index) {
         if(currentE.isRight(index)) {
             removeFromList();
+            return 1 ;
         }
+        return 0;
     }
     /**
      * 是否背完了一个单词序列

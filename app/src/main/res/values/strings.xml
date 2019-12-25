@@ -57,7 +57,7 @@
     <string name="toast_connect">请检查是否连接网络</string>
     <string name="exit_commit">确认</string>
     <string name="exit_quit">取消</string>
-    <string name="introduce_app">软件使用中的问题请给我们发邮件：，祝您使用愉快</string>
+    <string name="introduce_app">软件使用中的问题请给我们发邮件，祝您使用愉快!</string>
     <string name="git_addr">   </string>
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>

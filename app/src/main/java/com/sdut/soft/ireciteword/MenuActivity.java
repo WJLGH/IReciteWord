@@ -1,10 +1,15 @@
+
 package com.sdut.soft.ireciteword;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.sdut.soft.ireciteword.adapter.FragmentAdapter;
 import com.sdut.soft.ireciteword.fragment.ReciteFragment;
@@ -29,7 +34,7 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         ButterKnife.bind(this);
-
+//        setToolBar();
         initViewPager();
     }
     private void initViewPager() {
@@ -60,4 +65,5 @@ public class MenuActivity extends AppCompatActivity {
         //给TabLayout设置适配器
         mTabLayout.setTabsFromPagerAdapter(mFragmentAdapter);
     }
+
 }

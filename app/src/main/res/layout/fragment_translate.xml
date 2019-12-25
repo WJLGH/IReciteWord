@@ -3,8 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
+
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,6 +14,24 @@
         android:orientation="vertical"
 
         >
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_main_blue"
+            android:theme="@style/Theme.ToolBar.ZhiHu">
+
+            <TextView android:layout_width="wrap_content"
+                android:id="@+id/tv_tb_title"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </android.support.v7.widget.Toolbar>
+
 
         <EditText
             android:id="@+id/et_src"
@@ -27,23 +47,23 @@
             />
 
         <Button
-            android:layout_marginHorizontal="3dp"
             android:id="@+id/btn_search"
-           style="@style/base_btn"
-            android:background="@drawable/shap_btn_normal_orange"
-            android:text="@string/translate_title"
-            />
+            style="@style/base_btn"
+            android:background="@drawable/shap_btn_normal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="@string/translate_title" />
 
         <TextView
-            android:layout_marginHorizontal="3dp"
-            android:layout_marginTop="10dp"
             android:id="@+id/tv_tgt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="3dp"
+            android:layout_marginTop="10dp"
+            android:hint="翻译结果"
             android:inputType="textMultiLine"
             android:minLines="8"
-            android:textSize="24sp"
-            android:hint="翻译结果"/>
+            android:textSize="22sp" />
     </LinearLayout>
 
 

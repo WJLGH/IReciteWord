@@ -7,6 +7,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.View;
 
 import com.sdut.soft.ireciteword.bean.Word;
 import com.sdut.soft.ireciteword.dao.WordDao;
@@ -16,7 +19,9 @@ import com.sdut.soft.ireciteword.utils.YouDaoAudioUriUtils;
 
 import java.io.IOException;
 
-public class WordSpecificActivity extends AppCompatActivity implements DetailFragment.onSpeechListener{
+import static android.R.color.white;
+
+public class WordSpecificActivity extends AppCompatActivity implements DetailFragment.onSpeechListener {
 
     DetailFragment detailFgt;
     WordDao wordDao;
@@ -28,13 +33,14 @@ public class WordSpecificActivity extends AppCompatActivity implements DetailFra
         setContentView(R.layout.activity_word_specific);
         wordDao = new WordDao(this);
         addDetailFgt();
+       // setToolBar();
         initPlayer();
     }
 
     private void addDetailFgt() {
         Intent intent = getIntent();
         int id = intent.getIntExtra("id", 1);
-        Word w = wordDao.getWordById(Const.DEFAULT_META,id);
+        Word w = wordDao.getWordById(Const.DEFAULT_META, id);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         detailFgt = DetailFragment.newInstance(w);
@@ -57,6 +63,7 @@ public class WordSpecificActivity extends AppCompatActivity implements DetailFra
         }
 
     }
+
     private void initPlayer() {
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -82,5 +89,36 @@ public class WordSpecificActivity extends AppCompatActivity implements DetailFra
                 item.setSpeakImg(R.mipmap.icon_speaker_off);
             }
         });
+    }
+
+    private void setToolBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        toolbar.setTitle("Word");//设置主标题
+        toolbar.setTitleTextColor(getResources().getColor(white));//设置主标题颜色
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+//        StatusBarUtil.setColor(this, R.color.color_main_blue);
+        //  set status transparent
+//        StatusBarUtil.setTransparent(this);
+    }
+
+    /**
+     * use back button
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish(); // back button
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

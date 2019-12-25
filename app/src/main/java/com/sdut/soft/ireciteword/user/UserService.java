@@ -8,37 +8,42 @@ import com.sdut.soft.ireciteword.dao.UserDao;
 
 public class UserService {
     UserDao userDao;
-    Context context ;
+    Context context;
+
     public UserService(Context context) {
         this.userDao = new UserDao(context);
         this.context = context;
     }
-// abc
+
+    // abc
     public User login(User user) {
         return userDao.checkUser(user);
     }
+
     public boolean register(User user) {
         return userDao.insert(user) > 0;
     }
+
     public void commitProgress(User u) {
         userDao.update(u);
     }
-    public  void saveUser(User user) {
+
+    public void saveUser(User user) {
         //为默认操作模式，代表该文件是私有数据，只能被应用本身访问，在该模式下，写入的内容会覆盖原文件的内容
         SharedPreferences preferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("id",user.getId());
+        editor.putInt("id", user.getId());
         editor.putString("name", user.getName());
         editor.commit();
     }
 
-    public  User currentUser() {
+    public User currentUser() {
         SharedPreferences preferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
         int id = preferences.getInt("id", -1);
         return userDao.getUserById(id);
     }
 
-    public  void removeUser() {
+    public void removeUser() {
         SharedPreferences preferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove("id");

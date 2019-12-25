@@ -21,6 +21,9 @@
         style="@style/buttontext_normal"
         android:id="@+id/btn_c0"
         android:layout_width="187dp"
+
+        android:background="@drawable/shap_btn_normall"
+
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -30,6 +33,7 @@
         android:layout_below="@id/btn_c0"
         style="@style/buttontext_normal"
         android:id="@+id/btn_c1"
+        android:background="@drawable/shap_btn_normall"
         android:layout_width="187dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -44,6 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
+        android:background="@drawable/shap_btn_normall"
+
         />
 
     <Button
@@ -54,6 +60,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
+        android:background="@drawable/shap_btn_normall"
+
          />
 
 </RelativeLayout>

@@ -22,6 +22,11 @@ public class ZhiHuActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zhi_hu);
 
+        setToolBar();
+
+    }
+
+    private void setToolBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         toolbar.setNavigationIcon(R.mipmap.ic_drawer_home);
@@ -49,7 +54,6 @@ public class ZhiHuActivity extends BaseActivity {
                 return true;
             }
         });
-
     }
 
 

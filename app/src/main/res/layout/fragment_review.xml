@@ -3,9 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    style="@style/base_linearLayout"
-    >
+    android:layout_height="match_parent">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_main_blue"
+        android:theme="@style/Theme.ToolBar.ZhiHu">
+
+        <TextView
+            android:id="@+id/tv_tb_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </android.support.v7.widget.Toolbar>
 
     <TextView
         android:id="@+id/tv_last"
@@ -17,7 +35,6 @@
         android:layout_marginEnd="68dp"
         android:layout_marginRight="68dp"
         android:layout_marginBottom="98dp"
-        android:text="还剩个单词没有复习！！！"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/btn_review"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,8 +46,10 @@
         android:id="@+id/btn_review"
         style="@style/base_btn"
         android:layout_marginBottom="260dp"
-       android:background="@drawable/shap_btn_normal"
+        android:background="@drawable/shap_btn_normal"
         android:text="开始复习"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -3,12 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
-    <LinearLayout
-        android:layout_marginTop="10dp"
+    android:orientation="vertical">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/color_main_blue"
+        android:theme="@style/Theme.ToolBar.ZhiHu">
+
+        <TextView android:layout_width="wrap_content"
+            android:id="@+id/tv_tb_title"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </android.support.v7.widget.Toolbar>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
 
         <TextView
@@ -26,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="您的词汇量"
+            android:text="您的词汇量:"
             android:textColor="#2791f4"
             android:textSize="18sp" />
 
@@ -48,15 +66,19 @@
         android:layout_marginRight="10dp"
         android:background="#778899"
         android:layerType="software" />
+
     <RelativeLayout
-        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp">
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
-            android:layout_centerHorizontal="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
     </RelativeLayout>
-<!--TODO change the color of settings -->
+    <!--TODO change the color of settings -->
 </LinearLayout>

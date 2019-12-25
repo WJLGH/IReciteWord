@@ -1,9 +1,11 @@
 package com.sdut.soft.ireciteword;
 
 import android.content.DialogInterface;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,15 +21,15 @@ import com.sdut.soft.ireciteword.utils.Const;
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- *  Review demo
- *
+ * Review demo
  */
-public class ReviewActivity extends AppCompatActivity{
+public class ReviewActivity extends AppCompatActivity {
     List<Integer> list = Arrays.asList(R.id.btn_c0, R.id.btn_c1, R.id.btn_c2, R.id.btn_c3);
     @BindView(R.id.tv_hint)
     TextView tvHint;
@@ -39,7 +41,14 @@ public class ReviewActivity extends AppCompatActivity{
     Button btnC2;
     @BindView(R.id.btn_c3)
     Button btnC3;
-    WordReciteService service ;
+    @BindColor(R.color.success)
+    int colorSuccess;
+    @BindColor(R.color.failed)
+    int colorFailed;
+    @BindColor(R.color.normal)
+    int colorNormal;
+
+    WordReciteService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +57,15 @@ public class ReviewActivity extends AppCompatActivity{
         ButterKnife.bind(this);
         initView();
     }
-    void initView(){
+
+    void initView() {
         service = new WordReciteService(this);
         setOptions();
     }
 
     private void setOptions() {
         WordOptions options = service.getNext();
-        if( null == options ) {
+        if (null == options) {
             new AlertDialog.Builder(this)
                     .setTitle("下一步")
                     .setIcon(R.mipmap.ic_launcher)
@@ -91,15 +101,26 @@ public class ReviewActivity extends AppCompatActivity{
     public void save() {
         UserService userService = new UserService(ReviewActivity.this);
         User user = userService.currentUser();
-        user.setRvindex(user.getRvindex()+user.getPerday());
+        user.setRvindex(user.getRvindex() + user.getPerday());
         userService.commitProgress(user);
         setResult(Const.REVIEW_FLAG);
         ReviewActivity.this.finish();
     }
+
     @OnClick(value = {R.id.btn_c0, R.id.btn_c1, R.id.btn_c2, R.id.btn_c3})
-    public void choose(View v) {
+    public void choose(final View v) {
         Integer choose = list.indexOf(v.getId());
-        service.choose(choose);
+
+        final int result = service.choose(choose);
+        //TODO timeLine question
+        if (result == 1) {
+            v.setBackgroundColor(colorSuccess);
+            Toast.makeText(ReviewActivity.this, "You are right!", Toast.LENGTH_SHORT).show();
+        } else {
+            v.setBackgroundColor(colorFailed);
+            Toast.makeText(ReviewActivity.this, "Sorry, you are wrong!", Toast.LENGTH_SHORT).show();
+        }
+        v.setBackgroundColor(colorNormal);
         int cnt = service.getCnt();
         setOptions();
     }

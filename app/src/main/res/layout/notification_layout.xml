@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_weight="1"
-        android:background="#1d99ff"
+        android:background="@drawable/shap_btn_normal"
         android:text="查询"
         android:textSize="20sp" />
 </LinearLayout>

@@ -8,4 +8,7 @@
     android:id="@+id/detail_container"
     android:orientation="horizontal">
 
+
+
+
 </LinearLayout>
