@@ -2,13 +2,21 @@ package com.sdut.soft.ireciteword.user;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Message;
 
+import com.sdut.soft.ireciteword.api.BaseApi;
 import com.sdut.soft.ireciteword.bean.User;
+import com.sdut.soft.ireciteword.bean.UserVo;
 import com.sdut.soft.ireciteword.dao.UnitDao;
-import com.sdut.soft.ireciteword.dao.UserDao;
+import com.sdut.soft.ireciteword.utils.Const;
+import com.sdut.soft.ireciteword.utils.UserResult;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UserService {
-    UserDao userDao;
     Context context;
     UnitDao unitDao;
 
@@ -16,23 +24,88 @@ public class UserService {
         return currentUser().getName()+"的生词表";
     }
     public UserService(Context context) {
-        this.userDao = new UserDao(context);
         this.context = context;
         this.unitDao = new UnitDao(context);
     }
 
     // abc
-    public User login(User user) {
-        return userDao.checkUser(user);
+    public void login(User user, final Handler handler) {
+            UserServiceInf userServiceInf = BaseApi.retrofit(Const.USER_SERVER).create(UserServiceInf.class);
+            Call<UserResult> call = userServiceInf.login(user);
+            call.enqueue(new Callback<UserResult>() {
+                @Override
+                public void onResponse(Call<UserResult> call, Response<UserResult> response) {
+                    Message message  = new Message();
+                    User user1 = response.body().getData();
+                    message.obj = user1;
+                    if (user1 != null) {
+                        message.what = Const.LOG_IN_SUCCESS;
+                    } else {
+                        message.what = Const.LOG_IN_FAILURE;
+                    }
+                    handler.sendMessage(message);
+                }
+
+                @Override
+                public void onFailure(Call<UserResult> call, Throwable t) {
+                    Message message  = new Message();
+                    message.what = Const.LOG_IN_FAILURE;
+                    handler.sendMessage(message);
+                }
+            });
+
     }
 
-    public boolean register(User user) {
-        unitDao.createUnit(user.getName()+"的生词表");
-        return userDao.insert(user) > 0;
+    public void register(User user, final Handler handler) {
+        UserServiceInf userServiceInf = BaseApi.retrofit(Const.USER_SERVER).create(UserServiceInf.class);
+        Call<UserResult> call = userServiceInf.register(user);
+        call.enqueue(new Callback<UserResult>() {
+            @Override
+            public void onResponse(Call<UserResult> call, Response<UserResult> response) {
+                Message message  = new Message();
+                User user1 = response.body().getData();
+                message.obj = user1;
+                if (user1 != null) {
+                    message.what = Const.REGISTER_SUCCESS;
+                } else {
+                    message.what = Const.REGISTER_FAILURE;
+                }
+                handler.sendMessage(message);
+            }
+
+            @Override
+            public void onFailure(Call<UserResult> call, Throwable t) {
+                Message message  = new Message();
+                message.what = Const.REGISTER_FAILURE;
+                handler.sendMessage(message);
+            }
+        });
     }
 
-    public void commitProgress(User u) {
-        userDao.update(u);
+    public void commitProgress(UserVo user, final Handler handler) {
+        UserServiceInf userServiceInf = BaseApi.retrofit(Const.USER_SERVER).create(UserServiceInf.class);
+        Call<UserResult> call = userServiceInf.updatePwd(user);
+        call.enqueue(new Callback<UserResult>() {
+            @Override
+            public void onResponse(Call<UserResult> call, Response<UserResult> response) {
+                Message message  = new Message();
+                User user1 = response.body().getData();
+                message.obj = response.body().getMessage();
+                if (user1 != null) {
+                    message.what = Const.PWD_UPDATE_SUCCESS;
+                } else {
+                    message.what = Const.PWD_UPDATE_FAILURE;
+                }
+                handler.sendMessage(message);
+            }
+
+            @Override
+            public void onFailure(Call<UserResult> call, Throwable t) {
+                Message message  = new Message();
+                message.what = Const.PWD_UPDATE_FAILURE;
+                handler.sendMessage(message);
+            }
+        });
     }
 
     public void saveUser(User user) {
@@ -47,7 +120,12 @@ public class UserService {
     public User currentUser() {
         SharedPreferences preferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
         int id = preferences.getInt("id", -1);
-        return userDao.getUserById(id);
+        String name = preferences.getString("name", null);
+        if(id == -1 || name == null) {
+            return  null;
+        }
+        User user = new User(id, name);
+        return user;
     }
 
     public void removeUser() {
@@ -58,4 +136,7 @@ public class UserService {
         editor.commit();
     }
 
+    public void createUnit(User user) {
+        unitDao.createUnit(user.getName()+"的生词表");
+    }
 }

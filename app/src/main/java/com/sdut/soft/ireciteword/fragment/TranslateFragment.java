@@ -62,7 +62,7 @@ public class TranslateFragment extends android.support.v4.app.Fragment {
 
     @OnClick(R.id.btn_search)
     public void search() {
-        YouDaoTranslateService.translateString(eTSrc.getText().toString(), handler);
+        YouDaoTranslateService.translateString(eTSrc.getText().toString().trim(), handler);
     }
 
     private Handler handler = new Handler() {

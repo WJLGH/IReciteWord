@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -42,7 +43,29 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.et_pwd)
     EditText etPwd;
     UserService userService;
-
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case  Const.LOG_IN_SUCCESS:
+                    userService.saveUser((User) msg.obj);
+                    Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, MenuActivity.class);
+                    startActivity(intent);
+                    break;
+                case Const.LOG_IN_FAILURE:
+                    Toast.makeText(MainActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                    break;
+                case  Const.REGISTER_SUCCESS:
+                    userService.createUnit((User) msg.obj);
+                    Toast.makeText(MainActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                    break;
+                case Const.REGISTER_FAILURE:
+                    Toast.makeText(MainActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,14 +121,7 @@ public class MainActivity extends BaseActivity {
     @OnClick(R.id.btn_login)
     public void login() {
         User u = new User(etUser.getText().toString(), etPwd.getText().toString());
-        if (userService.login(u) != null) {
-            Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
-            userService.saveUser(u);
-            Intent intent = new Intent(MainActivity.this, MenuActivity.class);
-            startActivity(intent);
-        } else {
-            Toast.makeText(this, "登录失败", Toast.LENGTH_SHORT).show();
-        }
+        userService.login(u,handler);
     }
 
     @OnClick(R.id.btn_register)
@@ -114,17 +130,9 @@ public class MainActivity extends BaseActivity {
         String password = etPwd.getText().toString();
         int perDay = Const.PER_DAY;
 
-        User u = new User(null, name, password, 0L, 0L, perDay);
+        User u = new User(name, password);
         UserService userService = new UserService(this);
-        if (userService.login(u) != null) {
-            Toast.makeText(this, "该用户已注册，请登录！！！", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (userService.register(u)) {
-            Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "注册失败", Toast.LENGTH_SHORT).show();
-        }
+        userService.register(u,handler);
     }
     private boolean isExit;
 

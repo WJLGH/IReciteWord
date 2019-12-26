@@ -9,22 +9,25 @@ public class User {
     Integer id;
     String name;
     String password;
-    Long rcindex; //已经背过的最大序号
-    Long rvindex; //已经复习过的最大序号
-    Integer perday;    //每天背诵个数
+
+    public User() {
+
+    }
 
     public User(String name, String password) {
         this.name = name;
         this.password = password;
     }
 
-    public User(Integer id, String name, String password, Long rcindex, Long rvindex, Integer perday) {
+    public User(Integer id, String name, String password) {
         this.id = id;
         this.name = name;
         this.password = password;
-        this.rcindex = rcindex;
-        this.rvindex = rvindex;
-        this.perday = perday;
+    }
+
+    public User(int id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Integer getId() {
@@ -51,30 +54,12 @@ public class User {
         this.password = password;
     }
 
-    public Long getRcindex() {
-        return rcindex;
-    }
-
-    public void setRcindex(Long rcindex) {
-        this.rcindex = rcindex;
-    }
-
-    public Long getRvindex() {
-        return rvindex;
-    }
-
-    public void setRvindex(Long rvindex) {
-        this.rvindex = rvindex;
-    }
-
-    public Integer getPerday() {
-        if(perday <=0) {
-            return Const.PER_DAY;
-        }
-        return perday;
-    }
-
-    public void setPerday(Integer perday) {
-        this.perday = perday;
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

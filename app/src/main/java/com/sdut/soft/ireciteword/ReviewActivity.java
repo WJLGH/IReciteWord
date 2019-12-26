@@ -1,11 +1,9 @@
 package com.sdut.soft.ireciteword;
 
 import android.content.DialogInterface;
-import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -101,8 +99,7 @@ public class ReviewActivity extends AppCompatActivity {
     public void save() {
         UserService userService = new UserService(ReviewActivity.this);
         User user = userService.currentUser();
-        user.setRvindex(user.getRvindex() + user.getPerday());
-        userService.commitProgress(user);
+
         setResult(Const.REVIEW_FLAG);
         ReviewActivity.this.finish();
     }

@@ -17,6 +17,13 @@ public class Const {
     public static final int RECITE_FLAG = 233;
     public static final int REVIEW_FLAG = 777;
     public static final int FAILURE = 0 ;
+    public static final int LOG_IN_SUCCESS = 100;
+    public static final int LOG_IN_FAILURE = -100 ;
+    public static final int REGISTER_SUCCESS = 200;
+    public static final int REGISTER_FAILURE = -200;
+    public static final String USER_SERVER = "http://10.0.2.2";
+    public static final int PWD_UPDATE_SUCCESS = 300;
+    public static final int PWD_UPDATE_FAILURE = -300;
 
     public static String PLAY_SPEED = "play_speed";
     public static String AUTO_SPEAK = "auto_speak";

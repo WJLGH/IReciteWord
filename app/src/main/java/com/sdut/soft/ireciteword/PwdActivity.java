@@ -1,5 +1,7 @@
 package com.sdut.soft.ireciteword;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,7 +10,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sdut.soft.ireciteword.bean.User;
+import com.sdut.soft.ireciteword.bean.UserVo;
 import com.sdut.soft.ireciteword.user.UserService;
+import com.sdut.soft.ireciteword.utils.Const;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,7 +43,7 @@ public class PwdActivity extends AppCompatActivity {
     @OnClick(R.id.btn_submit)
     public void submit() {
         clearAllError();
-        User user = userService.currentUser();
+        User currentUser = userService.currentUser();
         String oldPwd = oPwd.getText().toString();
         String newPwd = nPwd.getText().toString();
         String repeatPwd = rPwd.getText().toString();
@@ -58,23 +62,33 @@ public class PwdActivity extends AppCompatActivity {
             rPwdE.setText("内容不能为空");
             return ;
         }
-
-        if (!oldPwd.equals(user.getPassword())) {
-            oPwdE.setVisibility(View.VISIBLE);
-            oPwdE.setText("原密码错误");
-            return;
-        }
         if(!newPwd.equals(repeatPwd)) {
             rPwdE.setVisibility(View.VISIBLE);
             rPwdE.setText("密码不一致，请重新输入");
             return;
         }
-        user.setPassword(newPwd);
-        userService.commitProgress(user);
-        Toast.makeText(PwdActivity.this, "密码修改成功", Toast.LENGTH_SHORT).show();
-        finish();
-    }
+        UserVo userVo = new UserVo();
+        userVo.setOldPwd(oldPwd);
+        userVo.setPassword(newPwd);
+        userVo.setId(currentUser.getId());
+        userService.commitProgress(userVo,handler);
 
+    }
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Const.PWD_UPDATE_SUCCESS:
+                    Toast.makeText(PwdActivity.this, "密码修改成功", Toast.LENGTH_SHORT).show();
+                    finish();
+                break;
+                case Const.PWD_UPDATE_FAILURE:
+                    Toast.makeText(PwdActivity.this, "密码修改失败", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+
+        }
+    };
     private void clearAllError() {
         oPwdE.setVisibility(View.INVISIBLE);
         nPwdE.setVisibility(View.INVISIBLE);
