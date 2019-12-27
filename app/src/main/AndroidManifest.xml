@@ -49,6 +49,7 @@
         <activity android:name=".WordAddActivity" />
         <activity android:name=".BackUpActivity" />
         <activity android:name=".RecoveryActivity"></activity>
+        <activity android:name=".StrangeWord"></activity>
     </application>
 
 </manifest>

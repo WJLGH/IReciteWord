@@ -21,6 +21,7 @@ import com.sdut.soft.ireciteword.AboutActivity;
 import com.sdut.soft.ireciteword.PwdActivity;
 import com.sdut.soft.ireciteword.R;
 import com.sdut.soft.ireciteword.RecoveryActivity;
+import com.sdut.soft.ireciteword.StrangeWord;
 import com.sdut.soft.ireciteword.activity.toolbar.ZhiHuActivity;
 import com.sdut.soft.ireciteword.adapter.SettingOptionAdapter;
 import com.sdut.soft.ireciteword.bean.SettingOption;
@@ -55,11 +56,13 @@ public class SettingsFragment extends Fragment {
     RecyclerView recyclerView;
     SettingOptionAdapter adapter;
     UserService userService;
-    List<String> options = Arrays.asList("基本设置", "修改密码", "数据备份","数据还原", "软件信息");
+    List<String> options = Arrays.asList("生词本","基本设置", "修改密码", "数据备份","数据还原", "软件信息");
     // todo change aboutActivity -> zhihuActivity (project Problem)
     // TODO use for add some settings here .
-    List<Class<? extends AppCompatActivity>> tgtClz = Arrays.asList(BaseSettingActivity.class,
-            PwdActivity.class,  BackUpActivity.class, RecoveryActivity.class, AboutActivity.class);
+    List<Class<? extends AppCompatActivity>> tgtClz = Arrays.asList(
+            StrangeWord.class,BaseSettingActivity.class,
+            PwdActivity.class,   BackUpActivity.class,
+            RecoveryActivity.class, AboutActivity.class);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

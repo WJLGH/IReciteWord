@@ -4,10 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".StrangeWord">
+
+    <TextView
+        android:id="@+id/unit_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="我的生词本"
+        android:textAlignment="center"
+        android:textSize="24sp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/word_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 </LinearLayout>

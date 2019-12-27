@@ -72,15 +72,13 @@ public class WordDao {
         boolean ret = false;
         try {
             ret = database.delete(unit.getName(), "Word_Id = ?", new String[]{"" + word.getId()}) > 0;
-
+            return ret;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         } finally {
             database.close();
         }
-
-        return ret;
     }
 
     /**
@@ -302,7 +300,7 @@ public class WordDao {
 
     public List<Word> getAllWord(String unitName) {
         List<Word> words = null;
-        String sql = "select Word_Key, Word_Phono, Word_Trans, Word_Example  from " + unitName;
+        String sql = "select Word_Id,Word_Key, Word_Phono, Word_Trans, Word_Example  from " + unitName;
         SQLiteDatabase db = mDBOpenHelper.getDatabase();
 
         Cursor cursor = db.rawQuery(sql, null);
@@ -310,12 +308,13 @@ public class WordDao {
             words = new ArrayList<>(cursor.getCount());
             Word word;
             do {
+                int id = cursor.getInt(cursor.getColumnIndex("Word_Id"));
                 String key = cursor.getString(cursor.getColumnIndex("Word_Key"));
                 String phono = cursor.getString(cursor.getColumnIndex("Word_Phono"));
                 String trans = cursor.getString(cursor.getColumnIndex("Word_Trans"));
                 String exam = cursor.getString(cursor.getColumnIndex("Word_Example"));
 //                Integer unit = cursor.getInt(cursor.getColumnIndex("Word_Unit"));
-                word = new Word(key, phono, trans, exam);
+                word = new Word(id,key, phono, trans, exam,null);
                 words.add(word);
             } while (cursor.moveToNext());
         }
